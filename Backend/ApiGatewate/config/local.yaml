@@ -1,0 +1,13 @@
+env: "local"
+
+http:
+  port: 8080
+
+auth_service:
+  address: "localhost:5000"
+
+s3:
+  access_key: "test"
+  secret_access_key: "test"
+  bucket_name: "test"
+  endpoint: "https://test.com"
