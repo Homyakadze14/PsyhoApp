@@ -1,0 +1,120 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "./gen;authv1";
+
+// AuthService provides authentication and authorization functionality
+service AuthService {
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+  rpc Register(RegisterRequest) returns (RegisterResponse) {}
+  rpc Logout(LogoutRequest) returns (LogoutResponse) {}
+  rpc GenerateAuthCode(GenerateAuthCodeRequest) returns (GenerateAuthCodeResponse) {}
+  rpc Verify(VerifyRequest) returns (VerifyResponse) {}
+  rpc GenerateServiceToken(GenerateServiceTokenRequest) returns (GenerateServiceTokenResponse) {}
+  rpc GetRole(GetRoleRequest) returns (GetRoleResponse) {}
+  rpc SetRole(SetRoleRequest) returns (SetRoleResponse) {}
+  rpc CheckAccessToken(CheckAccessTokenRequest) returns (CheckAccessTokenResponse) {}
+  rpc CheckServiceToken(CheckServiceTokenRequest) returns (CheckServiceTokenResponse) {}
+}
+
+// LoginRequest represents a login request
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+// LoginResponse represents a login response
+message LoginResponse {
+  int64 id = 1;
+  string access_token = 2;
+}
+
+// RegisterRequest represents a registration request
+message RegisterRequest {
+  string username = 1;
+  string password = 2;
+}
+
+// RegisterResponse represents a registration response
+message RegisterResponse {
+  bool success = 1;
+}
+
+// LogoutRequest represents a logout request
+message LogoutRequest {
+  string access_token = 1;
+}
+
+// LogoutResponse represents a logout response
+message LogoutResponse {
+  bool success = 1;
+}
+
+// GenerateAuthCodeRequest represents a generate auth code request
+message GenerateAuthCodeRequest {
+  int64 user_id = 1;
+}
+
+// GenerateAuthCodeResponse represents a generate auth code response
+message GenerateAuthCodeResponse {
+  string code = 1;
+}
+
+// VerifyRequest represents a verification request
+message VerifyRequest {
+  int64 user_id = 1;
+  string code = 2;
+}
+
+// VerifyResponse represents a verification response
+message VerifyResponse {
+  bool verified = 1;
+}
+
+// GenerateServiceTokenRequest represents a generate service token request
+message GenerateServiceTokenRequest {
+  string service_name = 1;
+}
+
+// GenerateServiceTokenResponse represents a generate service token response
+message GenerateServiceTokenResponse {
+  string token = 1;
+}
+
+// GetRoleRequest represents a get role request
+message GetRoleRequest {
+  int64 user_id = 1;
+}
+
+// GetRoleResponse represents a get role response
+message GetRoleResponse {
+  string role = 1;
+}
+
+// SetRoleRequest represents a set role request
+message SetRoleRequest {
+  int64 user_id = 1;
+  string role = 2;
+}
+
+// SetRoleResponse represents a set role response
+message SetRoleResponse {
+  bool success = 1;
+}
+
+message CheckAccessTokenRequest {
+  string access_token = 1;
+}
+
+message CheckAccessTokenResponse {
+  int64 user_id = 1;
+}
+
+message CheckServiceTokenRequest {
+  string service_token = 1;
+}
+
+message CheckServiceTokenResponse {
+  bool valid = 1;
+}

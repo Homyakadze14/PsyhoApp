@@ -1,0 +1,46 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    volumes:
+      - ./ofs-pg:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "pass"
+      POSTGRES_DB: "postgres"
+    ports:
+      - 5432:5432
+
+  api-gatewate:
+    build: ./Backend/ApiGatewate
+    container_name: api-gatewate
+    image: api-gatewate
+    restart: always
+    environment:
+      GIN_MODE: release
+      AUTH_ADDRESS: "localhost:5000"
+    ports:
+      - 8080:8080
+    network_mode: host
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: redispassword
+      REDIS_USER: user
+      REDIS_USER_PASSWORD: redispassword
+
+  auth-microservice:
+    build: ./Backend/AuthMicroservice
+    container_name: auth-microservice
+    image: auth-microservice
+    restart: always
+    env_file:
+      - config/.env
+    ports:
+      - 5000:5000
+    network_mode: host
