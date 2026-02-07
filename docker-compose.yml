@@ -40,7 +40,7 @@ services:
     image: auth-microservice
     restart: always
     env_file:
-      - config/.env
+      - ./Backend/AuthMicroservice/config/.env
     ports:
       - 5000:5000
     network_mode: host
