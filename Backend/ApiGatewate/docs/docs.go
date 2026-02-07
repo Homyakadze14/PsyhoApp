@@ -15,9 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/activate_account": {
+        "/auth/check_access_token": {
             "post": {
-                "description": "Activate account",
+                "description": "Check access token validity",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,15 +27,15 @@ const docTemplate = `{
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Activate account",
-                "operationId": "Activate account",
+                "summary": "Check Access Token",
+                "operationId": "CheckAccessToken",
                 "parameters": [
                     {
-                        "description": "activate",
-                        "name": "activate",
+                        "description": "request",
+                        "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/entities.ActivateAccountRequest"
+                            "$ref": "#/definitions/authv1.CheckAccessTokenRequest"
                         }
                     }
                 ],
@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/authv1.ActivateAccountResponse"
+                            "$ref": "#/definitions/authv1.CheckAccessTokenResponse"
                         }
                     },
                     "400": {
@@ -61,9 +61,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/change_password": {
+        "/auth/check_service_token": {
             "post": {
-                "description": "Change password",
+                "description": "Check service token validity",
                 "consumes": [
                     "application/json"
                 ],
@@ -73,15 +73,15 @@ const docTemplate = `{
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Change password",
-                "operationId": "Change password",
+                "summary": "Check Service Token",
+                "operationId": "CheckServiceToken",
                 "parameters": [
                     {
-                        "description": "password",
-                        "name": "password",
+                        "description": "request",
+                        "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/entities.ChangePasswordRequest"
+                            "$ref": "#/definitions/authv1.CheckServiceTokenRequest"
                         }
                     }
                 ],
@@ -89,14 +89,149 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/authv1.ChangePasswordResponse"
+                            "$ref": "#/definitions/authv1.CheckServiceTokenResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request"
                     },
-                    "401": {
-                        "description": "Unauthorized"
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    }
+                }
+            }
+        },
+        "/auth/generate_auth_code": {
+            "post": {
+                "description": "Generate authentication code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Generate Auth Code",
+                "operationId": "GenerateAuthCode",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/authv1.GenerateAuthCodeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authv1.GenerateAuthCodeResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    }
+                }
+            }
+        },
+        "/auth/generate_service_token": {
+            "post": {
+                "description": "Generate service token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Generate Service Token",
+                "operationId": "GenerateServiceToken",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/authv1.GenerateServiceTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authv1.GenerateServiceTokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    },
+                    "503": {
+                        "description": "Service Unavailable"
+                    }
+                }
+            }
+        },
+        "/auth/get_role": {
+            "post": {
+                "description": "Get user role",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get Role",
+                "operationId": "GetRole",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/authv1.GetRoleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/authv1.GetRoleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     },
                     "404": {
                         "description": "Not Found"
@@ -205,55 +340,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/refresh": {
-            "post": {
-                "description": "Refresh token",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Refresh token",
-                "operationId": "Refresh token",
-                "parameters": [
-                    {
-                        "description": "refresh",
-                        "name": "refresh",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/entities.RefreshRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/authv1.RefreshResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    },
-                    "503": {
-                        "description": "Service Unavailable"
-                    }
-                }
-            }
-        },
         "/auth/register": {
             "post": {
                 "description": "Register",
@@ -300,9 +386,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/send_password_link": {
+        "/auth/set_role": {
             "post": {
-                "description": "Send password link",
+                "description": "Set user role",
                 "consumes": [
                     "application/json"
                 ],
@@ -312,15 +398,15 @@ const docTemplate = `{
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Send password link",
-                "operationId": "Send password link",
+                "summary": "Set Role",
+                "operationId": "SetRole",
                 "parameters": [
                     {
-                        "description": "email",
-                        "name": "email",
+                        "description": "request",
+                        "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/entities.SendPasswordLinkRequest"
+                            "$ref": "#/definitions/authv1.SetRoleRequest"
                         }
                     }
                 ],
@@ -328,14 +414,11 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/authv1.SendPasswordLinkResponse"
+                            "$ref": "#/definitions/authv1.SetRoleResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
                     },
                     "404": {
                         "description": "Not Found"
@@ -349,84 +432,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/course": {
-            "get": {
-                "description": "Get all",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Course"
-                ],
-                "summary": "Get all",
-                "operationId": "Get all",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/coursev1.GetResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    },
-                    "503": {
-                        "description": "Service Unavailable"
-                    }
-                }
-            },
-            "put": {
-                "description": "Update",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Course"
-                ],
-                "summary": "Update",
-                "operationId": "Update",
-                "parameters": [
-                    {
-                        "description": "update",
-                        "name": "update",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/entities.UpdateRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/coursev1.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    },
-                    "503": {
-                        "description": "Service Unavailable"
-                    }
-                }
-            },
+        "/auth/verify": {
             "post": {
-                "description": "Create",
+                "description": "Verify authentication",
                 "consumes": [
                     "application/json"
                 ],
@@ -434,17 +442,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Course"
+                    "Auth"
                 ],
-                "summary": "Create",
-                "operationId": "Create",
+                "summary": "Verify",
+                "operationId": "Verify",
                 "parameters": [
                     {
-                        "description": "create",
-                        "name": "create",
+                        "description": "request",
+                        "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/entities.CreateRequest"
+                            "$ref": "#/definitions/authv1.VerifyRequest"
                         }
                     }
                 ],
@@ -452,71 +460,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/coursev1.SuccessResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    },
-                    "503": {
-                        "description": "Service Unavailable"
-                    }
-                }
-            }
-        },
-        "/course/{id}": {
-            "get": {
-                "description": "Get",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Course"
-                ],
-                "summary": "Get",
-                "operationId": "Get",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/coursev1.GetCourseResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    },
-                    "503": {
-                        "description": "Service Unavailable"
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Course"
-                ],
-                "summary": "Delete",
-                "operationId": "Delete",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/coursev1.SuccessResponse"
+                            "$ref": "#/definitions/authv1.VerifyResponse"
                         }
                     },
                     "400": {
@@ -578,110 +522,86 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/user/{id}": {
-            "get": {
-                "description": "Get user info",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Get user info",
-                "operationId": "Get user info",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/userv1.GetInfoResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    },
-                    "503": {
-                        "description": "Service Unavailable"
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Update user info",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Update user info",
-                "operationId": "Update user info",
-                "parameters": [
-                    {
-                        "description": "info",
-                        "name": "info",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/entities.UserUpdateRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/userv1.UpdateInfoResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    },
-                    "503": {
-                        "description": "Service Unavailable"
-                    }
-                }
-            }
         }
     },
     "definitions": {
-        "authv1.ActivateAccountResponse": {
+        "authv1.CheckAccessTokenRequest": {
             "type": "object",
             "properties": {
-                "success": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "authv1.CheckAccessTokenResponse": {
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "authv1.CheckServiceTokenRequest": {
+            "type": "object",
+            "properties": {
+                "service_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "authv1.CheckServiceTokenResponse": {
+            "type": "object",
+            "properties": {
+                "valid": {
                     "type": "boolean"
                 }
             }
         },
-        "authv1.ChangePasswordResponse": {
+        "authv1.GenerateAuthCodeRequest": {
             "type": "object",
             "properties": {
-                "success": {
-                    "type": "boolean"
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "authv1.GenerateAuthCodeResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                }
+            }
+        },
+        "authv1.GenerateServiceTokenRequest": {
+            "type": "object",
+            "properties": {
+                "service_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "authv1.GenerateServiceTokenResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "authv1.GetRoleRequest": {
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "authv1.GetRoleResponse": {
+            "type": "object",
+            "properties": {
+                "role": {
+                    "type": "string"
                 }
             }
         },
@@ -691,8 +611,8 @@ const docTemplate = `{
                 "access_token": {
                     "type": "string"
                 },
-                "refresh_token": {
-                    "type": "string"
+                "id": {
+                    "type": "integer"
                 }
             }
         },
@@ -704,17 +624,6 @@ const docTemplate = `{
                 }
             }
         },
-        "authv1.RefreshResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                },
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
         "authv1.RegisterResponse": {
             "type": "object",
             "properties": {
@@ -723,7 +632,18 @@ const docTemplate = `{
                 }
             }
         },
-        "authv1.SendPasswordLinkResponse": {
+        "authv1.SetRoleRequest": {
+            "type": "object",
+            "properties": {
+                "role": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "authv1.SetRoleResponse": {
             "type": "object",
             "properties": {
                 "success": {
@@ -731,237 +651,22 @@ const docTemplate = `{
                 }
             }
         },
-        "coursev1.Course": {
+        "authv1.VerifyRequest": {
             "type": "object",
             "properties": {
-                "description": {
+                "code": {
                     "type": "string"
                 },
-                "difficulty": {
-                    "type": "string"
-                },
-                "duration": {
+                "user_id": {
                     "type": "integer"
-                },
-                "full_description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "image": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "work": {
-                    "type": "string"
                 }
             }
         },
-        "coursev1.GetCourseResponse": {
+        "authv1.VerifyResponse": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "difficulty": {
-                    "type": "string"
-                },
-                "duration": {
-                    "type": "integer"
-                },
-                "full_description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "image": {
-                    "type": "string"
-                },
-                "themes": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/coursev1.Theme"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "work": {
-                    "type": "string"
-                }
-            }
-        },
-        "coursev1.GetResponse": {
-            "type": "object",
-            "properties": {
-                "courses": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/coursev1.Course"
-                    }
-                }
-            }
-        },
-        "coursev1.Lesson": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "duration": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "task": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "coursev1.SuccessResponse": {
-            "type": "object",
-            "properties": {
-                "success": {
+                "verified": {
                     "type": "boolean"
-                }
-            }
-        },
-        "coursev1.Theme": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "lessons": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/coursev1.Lesson"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.ActivateAccountRequest": {
-            "type": "object",
-            "required": [
-                "link"
-            ],
-            "properties": {
-                "link": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.ChangePasswordRequest": {
-            "type": "object",
-            "required": [
-                "link",
-                "password"
-            ],
-            "properties": {
-                "link": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string",
-                    "maxLength": 50,
-                    "minLength": 8
-                }
-            }
-        },
-        "entities.CreateLesson": {
-            "type": "object",
-            "required": [
-                "content",
-                "duration",
-                "task",
-                "title",
-                "type"
-            ],
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "duration": {
-                    "type": "integer"
-                },
-                "task": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.CreateRequest": {
-            "type": "object",
-            "required": [
-                "description",
-                "difficulty",
-                "full_description",
-                "title",
-                "work"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "difficulty": {
-                    "type": "string"
-                },
-                "duration": {
-                    "type": "integer"
-                },
-                "full_description": {
-                    "type": "string"
-                },
-                "image": {
-                    "type": "string"
-                },
-                "themes": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entities.CreateTheme"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "work": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.CreateTheme": {
-            "type": "object",
-            "required": [
-                "title"
-            ],
-            "properties": {
-                "lessons": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entities.CreateLesson"
-                    }
-                },
-                "title": {
-                    "type": "string"
                 }
             }
         },
@@ -979,12 +684,10 @@ const docTemplate = `{
         "entities.LoginRequest": {
             "type": "object",
             "required": [
-                "password"
+                "password",
+                "username"
             ],
             "properties": {
-                "email": {
-                    "type": "string"
-                },
                 "password": {
                     "type": "string",
                     "maxLength": 50,
@@ -998,21 +701,10 @@ const docTemplate = `{
         "entities.LogoutRequest": {
             "type": "object",
             "required": [
-                "refresh_token"
+                "access_token"
             ],
             "properties": {
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.RefreshRequest": {
-            "type": "object",
-            "required": [
-                "refresh_token"
-            ],
-            "properties": {
-                "refresh_token": {
+                "access_token": {
                     "type": "string"
                 }
             }
@@ -1020,14 +712,10 @@ const docTemplate = `{
         "entities.RegisterRequest": {
             "type": "object",
             "required": [
-                "email",
                 "password",
                 "username"
             ],
             "properties": {
-                "email": {
-                    "type": "string"
-                },
                 "password": {
                     "type": "string",
                     "maxLength": 50,
@@ -1040,92 +728,6 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.SendPasswordLinkRequest": {
-            "type": "object",
-            "required": [
-                "email"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.UpdateLesson": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "duration": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "task": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.UpdateRequest": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "difficulty": {
-                    "type": "string"
-                },
-                "duration": {
-                    "type": "integer"
-                },
-                "full_description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "image": {
-                    "type": "string"
-                },
-                "themes": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entities.UpdateTheme"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "work": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.UpdateTheme": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "lessons": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entities.UpdateLesson"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
         "entities.UploadResponse": {
             "type": "object",
             "properties": {
@@ -1134,67 +736,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/entities.FileResp"
                     }
-                }
-            }
-        },
-        "entities.UserUpdateRequest": {
-            "type": "object",
-            "required": [
-                "firstname",
-                "gender",
-                "lastname",
-                "middlename",
-                "phone"
-            ],
-            "properties": {
-                "firstname": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "string"
-                },
-                "icon_url": {
-                    "type": "string"
-                },
-                "lastname": {
-                    "type": "string"
-                },
-                "middlename": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
-                }
-            }
-        },
-        "userv1.GetInfoResponse": {
-            "type": "object",
-            "properties": {
-                "firstname": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "string"
-                },
-                "icon_url": {
-                    "type": "string"
-                },
-                "lastname": {
-                    "type": "string"
-                },
-                "middlename": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
-                }
-            }
-        },
-        "userv1.UpdateInfoResponse": {
-            "type": "object",
-            "properties": {
-                "success": {
-                    "type": "boolean"
                 }
             }
         }
@@ -1215,7 +756,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api/v1",
 	Schemes:          []string{"https"},
 	Title:            "API Gatewate",
-	Description:      "API Gatewate for orbit of success services",
+	Description:      "API Gatewate",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

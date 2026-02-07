@@ -17,12 +17,12 @@ import (
 )
 
 type Clients struct {
-	Auth authv1.AuthClient
+	Auth authv1.AuthServiceClient
 }
 
 // Swagger spec:
 // @title       API Gatewate
-// @description API Gatewate for orbit of success services
+// @description API Gatewate
 // @version     1.0
 // @schemes 	https
 // @host        cookhub.space

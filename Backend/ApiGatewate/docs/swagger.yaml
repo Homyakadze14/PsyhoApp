@@ -1,199 +1,95 @@
 basePath: /api/v1
 definitions:
-  authv1.ActivateAccountResponse:
+  authv1.CheckAccessTokenRequest:
     properties:
-      success:
+      access_token:
+        type: string
+    type: object
+  authv1.CheckAccessTokenResponse:
+    properties:
+      user_id:
+        type: integer
+    type: object
+  authv1.CheckServiceTokenRequest:
+    properties:
+      service_token:
+        type: string
+    type: object
+  authv1.CheckServiceTokenResponse:
+    properties:
+      valid:
         type: boolean
     type: object
-  authv1.ChangePasswordResponse:
+  authv1.GenerateAuthCodeRequest:
     properties:
-      success:
-        type: boolean
+      user_id:
+        type: integer
+    type: object
+  authv1.GenerateAuthCodeResponse:
+    properties:
+      code:
+        type: string
+    type: object
+  authv1.GenerateServiceTokenRequest:
+    properties:
+      service_name:
+        type: string
+    type: object
+  authv1.GenerateServiceTokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  authv1.GetRoleRequest:
+    properties:
+      user_id:
+        type: integer
+    type: object
+  authv1.GetRoleResponse:
+    properties:
+      role:
+        type: string
     type: object
   authv1.LoginResponse:
     properties:
       access_token:
         type: string
-      refresh_token:
-        type: string
+      id:
+        type: integer
     type: object
   authv1.LogoutResponse:
     properties:
       success:
         type: boolean
     type: object
-  authv1.RefreshResponse:
-    properties:
-      access_token:
-        type: string
-      refresh_token:
-        type: string
-    type: object
   authv1.RegisterResponse:
     properties:
       success:
         type: boolean
     type: object
-  authv1.SendPasswordLinkResponse:
+  authv1.SetRoleRequest:
+    properties:
+      role:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  authv1.SetRoleResponse:
     properties:
       success:
         type: boolean
     type: object
-  coursev1.Course:
+  authv1.VerifyRequest:
     properties:
-      description:
+      code:
         type: string
-      difficulty:
-        type: string
-      duration:
+      user_id:
         type: integer
-      full_description:
-        type: string
-      id:
-        type: integer
-      image:
-        type: string
-      title:
-        type: string
-      work:
-        type: string
     type: object
-  coursev1.GetCourseResponse:
+  authv1.VerifyResponse:
     properties:
-      description:
-        type: string
-      difficulty:
-        type: string
-      duration:
-        type: integer
-      full_description:
-        type: string
-      id:
-        type: integer
-      image:
-        type: string
-      themes:
-        items:
-          $ref: '#/definitions/coursev1.Theme'
-        type: array
-      title:
-        type: string
-      work:
-        type: string
-    type: object
-  coursev1.GetResponse:
-    properties:
-      courses:
-        items:
-          $ref: '#/definitions/coursev1.Course'
-        type: array
-    type: object
-  coursev1.Lesson:
-    properties:
-      content:
-        type: string
-      duration:
-        type: integer
-      id:
-        type: integer
-      task:
-        type: string
-      title:
-        type: string
-      type:
-        type: string
-    type: object
-  coursev1.SuccessResponse:
-    properties:
-      success:
+      verified:
         type: boolean
-    type: object
-  coursev1.Theme:
-    properties:
-      id:
-        type: integer
-      lessons:
-        items:
-          $ref: '#/definitions/coursev1.Lesson'
-        type: array
-      title:
-        type: string
-    type: object
-  entities.ActivateAccountRequest:
-    properties:
-      link:
-        type: string
-    required:
-    - link
-    type: object
-  entities.ChangePasswordRequest:
-    properties:
-      link:
-        type: string
-      password:
-        maxLength: 50
-        minLength: 8
-        type: string
-    required:
-    - link
-    - password
-    type: object
-  entities.CreateLesson:
-    properties:
-      content:
-        type: string
-      duration:
-        type: integer
-      task:
-        type: string
-      title:
-        type: string
-      type:
-        type: string
-    required:
-    - content
-    - duration
-    - task
-    - title
-    - type
-    type: object
-  entities.CreateRequest:
-    properties:
-      description:
-        type: string
-      difficulty:
-        type: string
-      duration:
-        type: integer
-      full_description:
-        type: string
-      image:
-        type: string
-      themes:
-        items:
-          $ref: '#/definitions/entities.CreateTheme'
-        type: array
-      title:
-        type: string
-      work:
-        type: string
-    required:
-    - description
-    - difficulty
-    - full_description
-    - title
-    - work
-    type: object
-  entities.CreateTheme:
-    properties:
-      lessons:
-        items:
-          $ref: '#/definitions/entities.CreateLesson'
-        type: array
-      title:
-        type: string
-    required:
-    - title
     type: object
   entities.FileResp:
     properties:
@@ -204,8 +100,6 @@ definitions:
     type: object
   entities.LoginRequest:
     properties:
-      email:
-        type: string
       password:
         maxLength: 50
         minLength: 8
@@ -214,25 +108,17 @@ definitions:
         type: string
     required:
     - password
+    - username
     type: object
   entities.LogoutRequest:
     properties:
-      refresh_token:
+      access_token:
         type: string
     required:
-    - refresh_token
-    type: object
-  entities.RefreshRequest:
-    properties:
-      refresh_token:
-        type: string
-    required:
-    - refresh_token
+    - access_token
     type: object
   entities.RegisterRequest:
     properties:
-      email:
-        type: string
       password:
         maxLength: 50
         minLength: 8
@@ -242,65 +128,8 @@ definitions:
         minLength: 3
         type: string
     required:
-    - email
     - password
     - username
-    type: object
-  entities.SendPasswordLinkRequest:
-    properties:
-      email:
-        type: string
-    required:
-    - email
-    type: object
-  entities.UpdateLesson:
-    properties:
-      content:
-        type: string
-      duration:
-        type: integer
-      id:
-        type: integer
-      task:
-        type: string
-      title:
-        type: string
-      type:
-        type: string
-    type: object
-  entities.UpdateRequest:
-    properties:
-      description:
-        type: string
-      difficulty:
-        type: string
-      duration:
-        type: integer
-      full_description:
-        type: string
-      id:
-        type: integer
-      image:
-        type: string
-      themes:
-        items:
-          $ref: '#/definitions/entities.UpdateTheme'
-        type: array
-      title:
-        type: string
-      work:
-        type: string
-    type: object
-  entities.UpdateTheme:
-    properties:
-      id:
-        type: integer
-      lessons:
-        items:
-          $ref: '#/definitions/entities.UpdateLesson'
-        type: array
-      title:
-        type: string
     type: object
   entities.UploadResponse:
     properties:
@@ -309,73 +138,32 @@ definitions:
           $ref: '#/definitions/entities.FileResp'
         type: array
     type: object
-  entities.UserUpdateRequest:
-    properties:
-      firstname:
-        type: string
-      gender:
-        type: string
-      icon_url:
-        type: string
-      lastname:
-        type: string
-      middlename:
-        type: string
-      phone:
-        type: string
-    required:
-    - firstname
-    - gender
-    - lastname
-    - middlename
-    - phone
-    type: object
-  userv1.GetInfoResponse:
-    properties:
-      firstname:
-        type: string
-      gender:
-        type: string
-      icon_url:
-        type: string
-      lastname:
-        type: string
-      middlename:
-        type: string
-      phone:
-        type: string
-    type: object
-  userv1.UpdateInfoResponse:
-    properties:
-      success:
-        type: boolean
-    type: object
 host: cookhub.space
 info:
   contact: {}
-  description: API Gatewate for orbit of success services
+  description: API Gatewate
   title: API Gatewate
   version: "1.0"
 paths:
-  /auth/activate_account:
+  /auth/check_access_token:
     post:
       consumes:
       - application/json
-      description: Activate account
-      operationId: Activate account
+      description: Check access token validity
+      operationId: CheckAccessToken
       parameters:
-      - description: activate
+      - description: request
         in: body
-        name: activate
+        name: request
         schema:
-          $ref: '#/definitions/entities.ActivateAccountRequest'
+          $ref: '#/definitions/authv1.CheckAccessTokenRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/authv1.ActivateAccountResponse'
+            $ref: '#/definitions/authv1.CheckAccessTokenResponse'
         "400":
           description: Bad Request
         "404":
@@ -384,39 +172,127 @@ paths:
           description: Internal Server Error
         "503":
           description: Service Unavailable
-      summary: Activate account
+      summary: Check Access Token
       tags:
       - Auth
-  /auth/change_password:
+  /auth/check_service_token:
     post:
       consumes:
       - application/json
-      description: Change password
-      operationId: Change password
+      description: Check service token validity
+      operationId: CheckServiceToken
       parameters:
-      - description: password
+      - description: request
         in: body
-        name: password
+        name: request
         schema:
-          $ref: '#/definitions/entities.ChangePasswordRequest'
+          $ref: '#/definitions/authv1.CheckServiceTokenRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/authv1.ChangePasswordResponse'
+            $ref: '#/definitions/authv1.CheckServiceTokenResponse'
         "400":
           description: Bad Request
-        "401":
-          description: Unauthorized
         "404":
           description: Not Found
         "500":
           description: Internal Server Error
         "503":
           description: Service Unavailable
-      summary: Change password
+      summary: Check Service Token
+      tags:
+      - Auth
+  /auth/generate_auth_code:
+    post:
+      consumes:
+      - application/json
+      description: Generate authentication code
+      operationId: GenerateAuthCode
+      parameters:
+      - description: request
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/authv1.GenerateAuthCodeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authv1.GenerateAuthCodeResponse'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+        "503":
+          description: Service Unavailable
+      summary: Generate Auth Code
+      tags:
+      - Auth
+  /auth/generate_service_token:
+    post:
+      consumes:
+      - application/json
+      description: Generate service token
+      operationId: GenerateServiceToken
+      parameters:
+      - description: request
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/authv1.GenerateServiceTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authv1.GenerateServiceTokenResponse'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+        "503":
+          description: Service Unavailable
+      summary: Generate Service Token
+      tags:
+      - Auth
+  /auth/get_role:
+    post:
+      consumes:
+      - application/json
+      description: Get user role
+      operationId: GetRole
+      parameters:
+      - description: request
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/authv1.GetRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authv1.GetRoleResponse'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+        "503":
+          description: Service Unavailable
+      summary: Get Role
       tags:
       - Auth
   /auth/login:
@@ -481,38 +357,6 @@ paths:
       summary: Logout
       tags:
       - Auth
-  /auth/refresh:
-    post:
-      consumes:
-      - application/json
-      description: Refresh token
-      operationId: Refresh token
-      parameters:
-      - description: refresh
-        in: body
-        name: refresh
-        schema:
-          $ref: '#/definitions/entities.RefreshRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/authv1.RefreshResponse'
-        "400":
-          description: Bad Request
-        "401":
-          description: Unauthorized
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-        "503":
-          description: Service Unavailable
-      summary: Refresh token
-      tags:
-      - Auth
   /auth/register:
     post:
       consumes:
@@ -543,78 +387,55 @@ paths:
       summary: Register
       tags:
       - Auth
-  /auth/send_password_link:
+  /auth/set_role:
     post:
       consumes:
       - application/json
-      description: Send password link
-      operationId: Send password link
+      description: Set user role
+      operationId: SetRole
       parameters:
-      - description: email
+      - description: request
         in: body
-        name: email
+        name: request
         schema:
-          $ref: '#/definitions/entities.SendPasswordLinkRequest'
+          $ref: '#/definitions/authv1.SetRoleRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/authv1.SendPasswordLinkResponse'
+            $ref: '#/definitions/authv1.SetRoleResponse'
         "400":
           description: Bad Request
-        "401":
-          description: Unauthorized
         "404":
           description: Not Found
         "500":
           description: Internal Server Error
         "503":
           description: Service Unavailable
-      summary: Send password link
+      summary: Set Role
       tags:
       - Auth
-  /course:
-    get:
-      description: Get all
-      operationId: Get all
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/coursev1.GetResponse'
-        "400":
-          description: Bad Request
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-        "503":
-          description: Service Unavailable
-      summary: Get all
-      tags:
-      - Course
+  /auth/verify:
     post:
       consumes:
       - application/json
-      description: Create
-      operationId: Create
+      description: Verify authentication
+      operationId: Verify
       parameters:
-      - description: create
+      - description: request
         in: body
-        name: create
+        name: request
         schema:
-          $ref: '#/definitions/entities.CreateRequest'
+          $ref: '#/definitions/authv1.VerifyRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/coursev1.SuccessResponse'
+            $ref: '#/definitions/authv1.VerifyResponse'
         "400":
           description: Bad Request
         "404":
@@ -623,81 +444,9 @@ paths:
           description: Internal Server Error
         "503":
           description: Service Unavailable
-      summary: Create
+      summary: Verify
       tags:
-      - Course
-    put:
-      consumes:
-      - application/json
-      description: Update
-      operationId: Update
-      parameters:
-      - description: update
-        in: body
-        name: update
-        schema:
-          $ref: '#/definitions/entities.UpdateRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/coursev1.SuccessResponse'
-        "400":
-          description: Bad Request
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-        "503":
-          description: Service Unavailable
-      summary: Update
-      tags:
-      - Course
-  /course/{id}:
-    delete:
-      description: Delete
-      operationId: Delete
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/coursev1.SuccessResponse'
-        "400":
-          description: Bad Request
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-        "503":
-          description: Service Unavailable
-      summary: Delete
-      tags:
-      - Course
-    get:
-      description: Get
-      operationId: Get
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/coursev1.GetCourseResponse'
-        "400":
-          description: Bad Request
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-        "503":
-          description: Service Unavailable
-      summary: Get
-      tags:
-      - Course
+      - Auth
   /media/upload:
     post:
       consumes:
@@ -728,63 +477,6 @@ paths:
       summary: Upload media
       tags:
       - media
-  /user/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Get user info
-      operationId: Get user info
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/userv1.GetInfoResponse'
-        "400":
-          description: Bad Request
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-        "503":
-          description: Service Unavailable
-      summary: Get user info
-      tags:
-      - User
-    put:
-      consumes:
-      - application/json
-      description: Update user info
-      operationId: Update user info
-      parameters:
-      - description: info
-        in: body
-        name: info
-        schema:
-          $ref: '#/definitions/entities.UserUpdateRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/userv1.UpdateInfoResponse'
-        "400":
-          description: Bad Request
-        "401":
-          description: Unauthorized
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-        "503":
-          description: Service Unavailable
-      security:
-      - ApiKeyAuth: []
-      summary: Update user info
-      tags:
-      - User
 schemes:
 - https
 securityDefinitions:

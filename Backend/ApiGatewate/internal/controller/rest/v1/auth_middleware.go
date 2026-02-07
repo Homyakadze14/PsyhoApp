@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func authMiddleware(log *slog.Logger, s authv1.AuthClient) gin.HandlerFunc {
+func authMiddleware(log *slog.Logger, s authv1.AuthServiceClient) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authH := c.GetHeader("Authorization")
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
@@ -26,7 +26,7 @@ func authMiddleware(log *slog.Logger, s authv1.AuthClient) gin.HandlerFunc {
 		token := strings.Split(authH, "Bearer ")[1]
 		slog.Info(token)
 
-		_, err := s.Verify(ctx, &authv1.VerifyRequest{AccessToken: token})
+		_, err := s.CheckAccessToken(ctx, &authv1.CheckAccessTokenRequest{AccessToken: token})
 		if err != nil {
 			status, err := common.GetProtoErrWithStatusCode(err)
 			log.Error(err.Error())

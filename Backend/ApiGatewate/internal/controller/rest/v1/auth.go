@@ -11,11 +11,11 @@ import (
 )
 
 type authRoutes struct {
-	s   authv1.AuthClient
+	s   authv1.AuthServiceClient
 	log *slog.Logger
 }
 
-func NewAuthRoutes(log *slog.Logger, handler *gin.RouterGroup, s authv1.AuthClient) {
+func NewAuthRoutes(log *slog.Logger, handler *gin.RouterGroup, s authv1.AuthServiceClient) {
 	r := &authRoutes{
 		log: log,
 		s:   s,
@@ -26,10 +26,15 @@ func NewAuthRoutes(log *slog.Logger, handler *gin.RouterGroup, s authv1.AuthClie
 		g.POST("/register", r.register)
 		g.POST("/login", r.login)
 		g.POST("/logout", r.logout)
-		g.POST("/activate_account", r.activateAccount)
-		g.POST("/refresh", r.refresh)
-		g.POST("/send_password_link", r.sndPwdLink)
-		g.POST("/change_password", r.changePwd)
+
+		// Additional auth endpoints
+		g.POST("/generate_auth_code", r.generateAuthCode)
+		g.POST("/verify", r.verify)
+		g.POST("/generate_service_token", r.generateServiceToken)
+		g.POST("/get_role", r.getRole)
+		g.POST("/set_role", r.setRole)
+		g.POST("/check_access_token", r.checkAccessToken)
+		g.POST("/check_service_token", r.checkServiceToken)
 	}
 }
 
@@ -148,34 +153,34 @@ func (r *authRoutes) logout(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Summary     Activate account
-// @Description Activate account
-// @ID          Activate account
+// @Summary     Generate Auth Code
+// @Description Generate authentication code
+// @ID          GenerateAuthCode
 // @Tags  	    Auth
 // @Accept      json
-// @Param 		activate body entities.ActivateAccountRequest false "activate"
+// @Param 		request body authv1.GenerateAuthCodeRequest false "request"
 // @Produce     json
-// @Success     200 {object} authv1.ActivateAccountResponse
+// @Success     200 {object} authv1.GenerateAuthCodeResponse
 // @Failure     400
 // @Failure     404
 // @Failure     500
 // @Failure     503
-// @Router      /auth/activate_account [post]
-func (r *authRoutes) activateAccount(c *gin.Context) {
-	const op = "authRoutes.activateAccount"
+// @Router      /auth/generate_auth_code [post]
+func (r *authRoutes) generateAuthCode(c *gin.Context) {
+	const op = "authRoutes.generateAuthCode"
 
 	log := r.log.With(
 		slog.String("op", op),
 	)
 
-	var req *entities.ActivateAccountRequest
+	var req *authv1.GenerateAuthCodeRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Error(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": common.GetErrMessages(err).Error()})
 		return
 	}
 
-	resp, err := r.s.ActivateAccount(c.Request.Context(), req.ToGRPC())
+	resp, err := r.s.GenerateAuthCode(c.Request.Context(), req)
 	if err != nil {
 		code, err := common.GetProtoErrWithStatusCode(err)
 		log.Error(err.Error())
@@ -186,35 +191,34 @@ func (r *authRoutes) activateAccount(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Summary     Refresh token
-// @Description Refresh token
-// @ID          Refresh token
+// @Summary     Verify
+// @Description Verify authentication
+// @ID          Verify
 // @Tags  	    Auth
 // @Accept      json
-// @Param 		refresh body entities.RefreshRequest false "refresh"
+// @Param 		request body authv1.VerifyRequest false "request"
 // @Produce     json
-// @Success     200 {object} authv1.RefreshResponse
+// @Success     200 {object} authv1.VerifyResponse
 // @Failure     400
-// @Failure     401
 // @Failure     404
 // @Failure     500
 // @Failure     503
-// @Router      /auth/refresh [post]
-func (r *authRoutes) refresh(c *gin.Context) {
-	const op = "authRoutes.activateArefreshccount"
+// @Router      /auth/verify [post]
+func (r *authRoutes) verify(c *gin.Context) {
+	const op = "authRoutes.verify"
 
 	log := r.log.With(
 		slog.String("op", op),
 	)
 
-	var req *entities.RefreshRequest
+	var req *authv1.VerifyRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Error(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": common.GetErrMessages(err).Error()})
 		return
 	}
 
-	resp, err := r.s.Refresh(c.Request.Context(), req.ToGRPC())
+	resp, err := r.s.Verify(c.Request.Context(), req)
 	if err != nil {
 		code, err := common.GetProtoErrWithStatusCode(err)
 		log.Error(err.Error())
@@ -225,35 +229,34 @@ func (r *authRoutes) refresh(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Summary     Send password link
-// @Description Send password link
-// @ID          Send password link
+// @Summary     Generate Service Token
+// @Description Generate service token
+// @ID          GenerateServiceToken
 // @Tags  	    Auth
 // @Accept      json
-// @Param 		email body entities.SendPasswordLinkRequest false "email"
+// @Param 		request body authv1.GenerateServiceTokenRequest false "request"
 // @Produce     json
-// @Success     200 {object} authv1.SendPasswordLinkResponse
+// @Success     200 {object} authv1.GenerateServiceTokenResponse
 // @Failure     400
-// @Failure     401
 // @Failure     404
 // @Failure     500
 // @Failure     503
-// @Router      /auth/send_password_link [post]
-func (r *authRoutes) sndPwdLink(c *gin.Context) {
-	const op = "authRoutes.sndPwdLink"
+// @Router      /auth/generate_service_token [post]
+func (r *authRoutes) generateServiceToken(c *gin.Context) {
+	const op = "authRoutes.generateServiceToken"
 
 	log := r.log.With(
 		slog.String("op", op),
 	)
 
-	var req *entities.SendPasswordLinkRequest
+	var req *authv1.GenerateServiceTokenRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Error(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": common.GetErrMessages(err).Error()})
 		return
 	}
 
-	resp, err := r.s.SendPasswordLink(c.Request.Context(), req.ToGRPC())
+	resp, err := r.s.GenerateServiceToken(c.Request.Context(), req)
 	if err != nil {
 		code, err := common.GetProtoErrWithStatusCode(err)
 		log.Error(err.Error())
@@ -264,35 +267,148 @@ func (r *authRoutes) sndPwdLink(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Summary     Change password
-// @Description Change password
-// @ID          Change password
+// @Summary     Get Role
+// @Description Get user role
+// @ID          GetRole
 // @Tags  	    Auth
 // @Accept      json
-// @Param 		password body entities.ChangePasswordRequest false "password"
+// @Param 		request body authv1.GetRoleRequest false "request"
 // @Produce     json
-// @Success     200 {object} authv1.ChangePasswordResponse
+// @Success     200 {object} authv1.GetRoleResponse
 // @Failure     400
-// @Failure     401
 // @Failure     404
 // @Failure     500
 // @Failure     503
-// @Router      /auth/change_password [post]
-func (r *authRoutes) changePwd(c *gin.Context) {
-	const op = "authRoutes.changePwd"
+// @Router      /auth/get_role [post]
+func (r *authRoutes) getRole(c *gin.Context) {
+	const op = "authRoutes.getRole"
 
 	log := r.log.With(
 		slog.String("op", op),
 	)
 
-	var req *entities.ChangePasswordRequest
+	var req *authv1.GetRoleRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Error(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": common.GetErrMessages(err).Error()})
 		return
 	}
 
-	resp, err := r.s.ChangePassword(c.Request.Context(), req.ToGRPC())
+	resp, err := r.s.GetRole(c.Request.Context(), req)
+	if err != nil {
+		code, err := common.GetProtoErrWithStatusCode(err)
+		log.Error(err.Error())
+		c.JSON(code, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+// @Summary     Set Role
+// @Description Set user role
+// @ID          SetRole
+// @Tags  	    Auth
+// @Accept      json
+// @Param 		request body authv1.SetRoleRequest false "request"
+// @Produce     json
+// @Success     200 {object} authv1.SetRoleResponse
+// @Failure     400
+// @Failure     404
+// @Failure     500
+// @Failure     503
+// @Router      /auth/set_role [post]
+func (r *authRoutes) setRole(c *gin.Context) {
+	const op = "authRoutes.setRole"
+
+	log := r.log.With(
+		slog.String("op", op),
+	)
+
+	var req *authv1.SetRoleRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Error(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": common.GetErrMessages(err).Error()})
+		return
+	}
+
+	resp, err := r.s.SetRole(c.Request.Context(), req)
+	if err != nil {
+		code, err := common.GetProtoErrWithStatusCode(err)
+		log.Error(err.Error())
+		c.JSON(code, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+// @Summary     Check Access Token
+// @Description Check access token validity
+// @ID          CheckAccessToken
+// @Tags  	    Auth
+// @Accept      json
+// @Param 		request body authv1.CheckAccessTokenRequest false "request"
+// @Produce     json
+// @Success     200 {object} authv1.CheckAccessTokenResponse
+// @Failure     400
+// @Failure     404
+// @Failure     500
+// @Failure     503
+// @Router      /auth/check_access_token [post]
+func (r *authRoutes) checkAccessToken(c *gin.Context) {
+	const op = "authRoutes.checkAccessToken"
+
+	log := r.log.With(
+		slog.String("op", op),
+	)
+
+	var req *authv1.CheckAccessTokenRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Error(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": common.GetErrMessages(err).Error()})
+		return
+	}
+
+	resp, err := r.s.CheckAccessToken(c.Request.Context(), req)
+	if err != nil {
+		code, err := common.GetProtoErrWithStatusCode(err)
+		log.Error(err.Error())
+		c.JSON(code, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+// @Summary     Check Service Token
+// @Description Check service token validity
+// @ID          CheckServiceToken
+// @Tags  	    Auth
+// @Accept      json
+// @Param 		request body authv1.CheckServiceTokenRequest false "request"
+// @Produce     json
+// @Success     200 {object} authv1.CheckServiceTokenResponse
+// @Failure     400
+// @Failure     404
+// @Failure     500
+// @Failure     503
+// @Router      /auth/check_service_token [post]
+func (r *authRoutes) checkServiceToken(c *gin.Context) {
+	const op = "authRoutes.checkServiceToken"
+
+	log := r.log.With(
+		slog.String("op", op),
+	)
+
+	var req *authv1.CheckServiceTokenRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Error(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": common.GetErrMessages(err).Error()})
+		return
+	}
+
+	resp, err := r.s.CheckServiceToken(c.Request.Context(), req)
 	if err != nil {
 		code, err := common.GetProtoErrWithStatusCode(err)
 		log.Error(err.Error())

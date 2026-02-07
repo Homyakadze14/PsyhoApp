@@ -23,7 +23,7 @@ func NewAuthService(log *slog.Logger, cfg config.AuthServiceConfig) *AuthService
 	}
 }
 
-func (s *AuthService) Connect() authv1.AuthClient {
+func (s *AuthService) Connect() authv1.AuthServiceClient {
 	const op = "AuthService.Connect"
 
 	log := s.log.With(
@@ -42,7 +42,7 @@ func (s *AuthService) Connect() authv1.AuthClient {
 	}
 	s.conn = conn
 
-	client := authv1.NewAuthClient(conn)
+	client := authv1.NewAuthServiceClient(conn)
 	log.Info("successfully connected to the auth service")
 
 	return client
