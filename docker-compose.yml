@@ -3,26 +3,23 @@ services:
     container_name: postgres
     image: postgres
     restart: always
-    volumes:
-      - ./ofs-pg:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: "user"
-      POSTGRES_PASSWORD: "pass"
-      POSTGRES_DB: "postgres"
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: postgres
     ports:
       - 5432:5432
 
-  api-gatewate:
+  api-gateway:
     build: ./Backend/ApiGatewate
-    container_name: api-gatewate
-    image: api-gatewate
+    container_name: api-gateway
+    image: api-gateway
     restart: always
     environment:
       GIN_MODE: release
-      AUTH_ADDRESS: "localhost:5000"
+      AUTH_ADDRESS: "auth-microservice:5000"
     ports:
       - 8080:8080
-    network_mode: host
 
   redis:
     image: redis:alpine
@@ -43,4 +40,7 @@ services:
       - ./Backend/AuthMicroservice/config/.env
     ports:
       - 5000:5000
-    network_mode: host
+
+volumes:
+  postgres_data:
+    driver: local
